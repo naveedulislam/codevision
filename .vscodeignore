@@ -1,5 +1,5 @@
 # Exclude source and dev files from the VSIX package.
-# Production node_modules (tesseract.js, jimp) are included automatically.
+# Production node_modules (tesseract.js, image-size) are included automatically.
 .vscode/**
 .vscode-test/**
 src/**
@@ -9,3 +9,12 @@ webpack.config.js
 tsconfig.json
 **/*.map
 **/*.ts
+
+# Scratch / debug files
+debug_tsv.js
+
+# Large tessdata training files — downloaded at runtime by tesseract.js
+*.traineddata
+
+# Dev-only node_module sub-packages not needed at runtime
+node_modules/opencollective-postinstall/**

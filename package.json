@@ -20,6 +20,10 @@
     "ai",
     "agent"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/naveedulislam/codevision"
+  },
   "activationEvents": [],
   "main": "./dist/extension.js",
   "contributes": {
@@ -114,7 +118,7 @@
     "build": "webpack --mode production --devtool hidden-source-map",
     "compile": "webpack",
     "watch": "webpack --watch",
-    "package": "vsce package --allow-missing-repository",
+    "package": "vsce package",
     "lint": "eslint src"
   },
   "dependencies": {
