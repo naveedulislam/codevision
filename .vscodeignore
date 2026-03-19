@@ -1,0 +1,11 @@
+# Exclude source and dev files from the VSIX package.
+# Production node_modules (tesseract.js, jimp) are included automatically.
+.vscode/**
+.vscode-test/**
+src/**
+out/**
+.gitignore
+webpack.config.js
+tsconfig.json
+**/*.map
+**/*.ts

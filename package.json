@@ -1,0 +1,133 @@
+{
+  "name": "codevision",
+  "displayName": "CodeVision",
+  "description": "Extract text from images using OCR and generate wireframes from screenshots. Works in VS Code, Cursor, and compatible IDEs.",
+  "version": "0.1.0",
+  "publisher": "codevision",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Other",
+    "Machine Learning"
+  ],
+  "keywords": [
+    "ocr",
+    "tesseract",
+    "image",
+    "wireframe",
+    "screenshot",
+    "ai",
+    "agent"
+  ],
+  "activationEvents": [],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "codevision.extractText",
+        "title": "CodeVision: Extract Text from Image File"
+      },
+      {
+        "command": "codevision.extractTextFromClipboard",
+        "title": "CodeVision: Extract Text from Clipboard Image"
+      },
+      {
+        "command": "codevision.generateWireframe",
+        "title": "CodeVision: Generate Wireframe from Image File"
+      },
+      {
+        "command": "codevision.analyzeImage",
+        "title": "CodeVision: Analyze Image (Text + Wireframe)"
+      },
+      {
+        "command": "codevision.analyzeActiveImage",
+        "title": "CodeVision: Analyze Active Image File"
+      },
+      {
+        "command": "codevision.extractTextFromUri",
+        "title": "Extract Text with CodeVision"
+      },
+      {
+        "command": "codevision.generateWireframeFromUri",
+        "title": "Generate Wireframe with CodeVision"
+      },
+      {
+        "command": "codevision.captureScreenshot",
+        "title": "CodeVision: Capture Screenshot & Analyze"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "codevision.captureScreenshot",
+        "key": "ctrl+shift+alt+4",
+        "mac": "ctrl+shift+cmd+4"
+      }
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "codevision.extractTextFromUri",
+          "when": "resourceExtname =~ /^\\.(png|jpg|jpeg|bmp|tiff|gif|webp)$/i",
+          "group": "codevision@1"
+        },
+        {
+          "command": "codevision.generateWireframeFromUri",
+          "when": "resourceExtname =~ /^\\.(png|jpg|jpeg|bmp|tiff|gif|webp)$/i",
+          "group": "codevision@2"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "CodeVision",
+      "properties": {
+        "codevision.tesseractLanguage": {
+          "type": "string",
+          "default": "eng",
+          "description": "Tesseract OCR language(s), e.g., 'eng', 'ara', 'eng+ara', 'chi_sim'. Multiple languages separated by '+'."
+        },
+        "codevision.tessDataPath": {
+          "type": "string",
+          "default": "",
+          "description": "Path to local Tesseract language data directory (for offline/air-gapped use). Leave empty to download automatically."
+        },
+        "codevision.wireframeFormat": {
+          "type": "string",
+          "enum": [
+            "svg",
+            "ascii",
+            "html"
+          ],
+          "default": "svg",
+          "description": "Format for wireframe output (svg = scalable graphic, ascii = text-only, html = interactive)."
+        },
+        "codevision.openResultInEditor": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically open OCR/wireframe results in a new editor tab."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run build",
+    "build": "webpack --mode production --devtool hidden-source-map",
+    "compile": "webpack",
+    "watch": "webpack --watch",
+    "package": "vsce package --allow-missing-repository",
+    "lint": "eslint src"
+  },
+  "dependencies": {
+    "image-size": "^1.2.1",
+    "tesseract.js": "^5.0.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.90.0",
+    "@vscode/vsce": "^3.7.1",
+    "ts-loader": "^9.5.1",
+    "typescript": "^5.3.0",
+    "webpack": "^5.89.0",
+    "webpack-cli": "^5.1.4"
+  }
+}
