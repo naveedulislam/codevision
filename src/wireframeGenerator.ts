@@ -69,14 +69,23 @@ function aggregateBlocks(rows: TsvRow[]): Map<string, {
     totalHeight: number;
   }>();
 
+  // Use a sequential counter so every line group gets a unique blockNum for display
+  let seqId = 0;
+  const seqMap = new Map<string, number>();
+
   for (const row of rows) {
     // Only pick up word-level rows with actual text
     if (row.level !== 5 || !row.text.trim() || row.conf < 0) { continue; }
 
-    const key = String(row.blockNum);
+    // Group at line level (blockNum + parNum + lineNum) so each individual text
+    // line becomes its own wireframe block rather than all lines collapsing into
+    // a single Tesseract block.
+    const key = `${row.blockNum}_${row.parNum}_${row.lineNum}`;
     if (!blocks.has(key)) {
+      const id = ++seqId;
+      seqMap.set(key, id);
       blocks.set(key, {
-        blockNum: row.blockNum,
+        blockNum: id,
         words: [],
         bbox: { x0: row.left, y0: row.top, x1: row.left + row.width, y1: row.top + row.height },
         totalHeight: 0
@@ -124,10 +133,14 @@ function classifyBlock(
     return relWidth > 0.5 ? 'header' : 'nav';
   }
 
-  // Large font mid-page → section heading
-  if (avgWordHeight > 22) { return 'heading'; }
+  // Large font mid-page → section heading.  Use a relative threshold
+  // (3 % of image height) so the check adapts to image size and does not
+  // fire for normal-sized sketch text (median word height ~24 px).
+  const headingThreshold = Math.max(30, imageHeight * 0.03);
+  if (avgWordHeight > headingThreshold) { return 'heading'; }
 
-  // Very few words in a small area → button
+  // Very few words in a small area → button (evaluated after heading so that
+  // single-word section headings with large fonts are classified correctly)
   if (wordCount <= 4 && blockWidth < imageWidth * 0.25 && blockHeight < imageHeight * 0.06) {
     return 'button';
   }

@@ -290,15 +290,21 @@ function saveClipboardImageToFile(destPath: string): Promise<void> {
       });
     });
   } else {
-    // Linux: try xclip, fall back to xsel
+    // Linux: try xclip (X11), fall back to wl-paste (Wayland)
     return new Promise((resolve, reject) => {
       cp.execFile('xclip', ['-selection', 'clipboard', '-t', 'image/png', '-o'], (err, stdout) => {
         if (!err && stdout.length > 0) {
           fs.writeFileSync(destPath, stdout, 'binary');
           resolve();
         } else {
-          cp.exec(`xsel --clipboard --output | file -`, (err2) => {
-            reject(new Error('xclip not found. Install xclip: sudo apt install xclip'));
+          // Wayland fallback via wl-clipboard
+          cp.execFile('wl-paste', ['--type', 'image/png'], (err2, stdout2) => {
+            if (!err2 && stdout2.length > 0) {
+              fs.writeFileSync(destPath, stdout2, 'binary');
+              resolve();
+            } else {
+              reject(new Error('No image in clipboard or no clipboard tool available. Install xclip: sudo apt install xclip'));
+            }
           });
         }
       });

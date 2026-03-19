@@ -196,14 +196,16 @@ function parseTsv(tsv) {
     const p = line.split('\t');
     if (p.length < 12) { return null; }
     return {
-      level: parseInt(p[0], 10),
+      level:    parseInt(p[0], 10),
       blockNum: parseInt(p[2], 10),
-      left: parseInt(p[6], 10),
-      top: parseInt(p[7], 10),
-      width: parseInt(p[8], 10),
-      height: parseInt(p[9], 10),
-      conf: parseFloat(p[10]),
-      text: p.slice(11).join('\t')
+      parNum:   parseInt(p[3], 10),
+      lineNum:  parseInt(p[4], 10),
+      left:     parseInt(p[6], 10),
+      top:      parseInt(p[7], 10),
+      width:    parseInt(p[8], 10),
+      height:   parseInt(p[9], 10),
+      conf:     parseFloat(p[10]),
+      text:     p.slice(11).join('\t')
     };
   }).filter(Boolean);
 }
@@ -220,7 +222,11 @@ function classifyBlock(bbox, avgH, wordCount, imgW, imgH) {
     if (relW > 0.6 && bh < imgH * 0.06) { return 'nav'; }
     return relW > 0.5 ? 'header' : 'nav';
   }
-  if (avgH > 22)  { return 'heading'; }
+  // Relative heading threshold (3% of image height, min 30 px) reduces false
+  // positives from normally-sized sketch text (median word height ~24 px).
+  const headingThreshold = Math.max(30, imgH * 0.03);
+  if (avgH > headingThreshold) { return 'heading'; }
+  // Button check after heading so single-word headings aren't mis-classified
   if (wordCount <= 4 && bw < imgW * 0.25 && bh < imgH * 0.06) { return 'button'; }
   if (relW < 0.28 && (bbox.x0 > imgW * 0.65 || bbox.x1 < imgW * 0.35)) { return 'sidebar'; }
   if (relW > 0.55) { return 'paragraph'; }
@@ -230,13 +236,15 @@ function classifyBlock(bbox, avgH, wordCount, imgW, imgH) {
 function buildBlocks(tsv, imgW, imgH) {
   const rows   = parseTsv(tsv);
   const map    = new Map();
+  let seqId    = 0;
 
   for (const row of rows) {
     if (row.level !== 5 || !row.text.trim() || row.conf < 0) { continue; }
-    const key = String(row.blockNum);
+    // Group at line level so each detected text line is its own wireframe block
+    const key = `${row.blockNum}_${row.parNum}_${row.lineNum}`;
     if (!map.has(key)) {
       map.set(key, {
-        blockNum: row.blockNum, words: [],
+        blockNum: ++seqId, words: [],
         bbox: { x0: row.left, y0: row.top, x1: row.left + row.width, y1: row.top + row.height },
         totalHeight: 0
       });
