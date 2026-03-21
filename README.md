@@ -1,4 +1,4 @@
-# CodeVision
+# CodePlanner
 
 A VS Code / Cursor extension (and standalone CLI) for **OCR text extraction** and **agent request building** — giving AI agents the precise file references and codebase context they need to act accurately.
 
@@ -16,15 +16,16 @@ A VS Code / Cursor extension (and standalone CLI) for **OCR text extraction** an
 | **Error context**         | One command inserts all current VS Code diagnostics (errors and warnings) into the active document                                                    |
 | **Screenshot capture**    | `Ctrl+Shift+Cmd+4` (macOS) / `Ctrl+Shift+Alt+4` (Windows/Linux) triggers OS screenshot tool → OCR result in editor                                    |
 | **Clipboard extraction**  | Extract text directly from an image copied to clipboard (no save needed)                                                                              |
-| **AI agent LM tool**      | Registered as a VS Code Language Model Tool — Copilot and other agents can call `codevision_extract_text` directly                                    |
-| **CLI tool**              | `node cli/codevision.js ocr` works in any terminal, including the integrated terminal                                                                 |
-| **Offline / air-gapped**  | Point `codevision.tessDataPath` at a local tessdata directory to avoid downloading language models                                                    |
+| **AI agent LM tool**      | Registered as a VS Code Language Model Tool — Copilot and other agents can call `codeplanner_extract_text` directly                                    |
+| **CLI tool**              | `node cli/codeplanner.js ocr` works in any terminal, including the integrated terminal                                                                 |
+| **Offline / air-gapped**  | Point `codeplanner.tessDataPath` at a local tessdata directory to avoid downloading language models                                                    |
+| **M365 Copilot Upload**   | Stage files in the Explorer sidebar, then send them all to M365 Copilot Chat in a single drag from a pre-selected Finder window                        |
 
 ---
 
 ## Agent Request Builder
 
-The Agent Request Builder helps you give AI agents accurate, complete context before asking them to code. Instead of pasting file paths by hand or describing your project structure from memory, CodeVision assembles everything for you.
+The Agent Request Builder helps you give AI agents accurate, complete context before asking them to code. Instead of pasting file paths by hand or describing your project structure from memory, CodePlanner assembles everything for you.
 
 ### Drop-to-insert
 
@@ -39,7 +40,7 @@ NutriComposer/web-app/src/App.tsx
 
 ### New Agent Request
 
-**Command Palette → `CodeVision: New Agent Request`**
+**Command Palette → `CodePlanner: New Agent Request`**
 
 Opens a new untitled Markdown document with a structured template:
 
@@ -66,13 +67,13 @@ Opens a new untitled Markdown document with a structured template:
 
 ## Workspace Context
 
-<!-- Use "CodeVision: Insert Workspace Context" to add project structure & git status. -->
+<!-- Use "CodePlanner: Insert Workspace Context" to add project structure & git status. -->
 
 ---
 
 ## Errors & Diagnostics
 
-<!-- Use "CodeVision: Insert Errors & Diagnostics" to embed current VS Code problems. -->
+<!-- Use "CodePlanner: Insert Errors & Diagnostics" to embed current VS Code problems. -->
 
 ---
 
@@ -91,9 +92,9 @@ Cursor lands in the **Task** section so you can start typing immediately.
 
 | Command                                         | Description                                            |
 | ----------------------------------------------- | ------------------------------------------------------ |
-| `CodeVision: Extract Text from Image File`      | Pick an image → extracted text in editor               |
-| `CodeVision: Extract Text from Clipboard Image` | Read image from OS clipboard → OCR it (no save needed) |
-| `CodeVision: Capture Screenshot & Extract Text` | OS screenshot picker → OCR result in editor            |
+| `CodePlanner: Extract Text from Image File`      | Pick an image → extracted text in editor               |
+| `CodePlanner: Extract Text from Clipboard Image` | Read image from OS clipboard → OCR it (no save needed) |
+| `CodePlanner: Capture Screenshot & Extract Text` | OS screenshot picker → OCR result in editor            |
 
 Right-click an image in the **Explorer** panel for the context-menu shortcut.
 
@@ -101,9 +102,28 @@ Right-click an image in the **Explorer** panel for the context-menu shortcut.
 
 | Command                                   | Description                                                     |
 | ----------------------------------------- | --------------------------------------------------------------- |
-| `CodeVision: New Agent Request`           | Create a new structured agent request template                  |
-| `CodeVision: Insert Workspace Context`    | Inserts project folder tree + `git branch` + `git status`       |
-| `CodeVision: Insert Errors & Diagnostics` | Inserts all VS Code errors and warnings from the Problems panel |
+| `CodePlanner: New Agent Request`           | Create a new structured agent request template                  |
+| `CodePlanner: Insert Workspace Context`    | Inserts project folder tree + `git branch` + `git status`       |
+| `CodePlanner: Insert Errors & Diagnostics` | Inserts all VS Code errors and warnings from the Problems panel |
+
+### M365 Copilot Upload Files
+
+The **Upload Files** panel in the Explorer sidebar lets you stage any number of files and send them all to M365 Copilot Chat at once.
+
+**Workflow:**
+
+1. Drag files from the Explorer into the **Upload Files** panel — or right-click any file and choose **Send to Upload Files**
+2. Click the **send icon** (↗) in the panel title bar
+3. A Finder window opens with all files pre-selected, and M365 Copilot opens beside it
+4. **One drag** from Finder to the browser attaches everything — no per-file dragging
+5. Click the **trash icon** to clear the list
+
+| Command                               | Description                                                      |
+| ------------------------------------- | ---------------------------------------------------------------- |
+| `CodePlanner: Send to Upload Files`   | Stage the right-clicked / active file in the Upload Files panel  |
+| `CodePlanner: Open M365 Copilot Chat` | Open M365 Copilot in the built-in Simple Browser                 |
+| `CodePlanner: Copy All to Clipboard`  | Stage → open Finder (all selected) + open M365 Copilot browser  |
+| `CodePlanner: Clear Staged Files`     | Remove all files from the Upload Files panel                     |
 
 ---
 
@@ -118,13 +138,13 @@ Right-click an image in the **Explorer** panel for the context-menu shortcut.
 
 ## Configuration
 
-Open **Settings → Extensions → CodeVision** or edit `settings.json`:
+Open **Settings → Extensions → CodePlanner** or edit `settings.json`:
 
 ```json
 {
-  "codevision.tesseractLanguage": "eng",
-  "codevision.tessDataPath": "",
-  "codevision.openResultInEditor": true
+  "codeplanner.tesseractLanguage": "eng",
+  "codeplanner.tessDataPath": "",
+  "codeplanner.openResultInEditor": true
 }
 ```
 
@@ -140,7 +160,7 @@ Open **Settings → Extensions → CodeVision** or edit `settings.json`:
 
 ```bash
 # From the extension root (after npm install):
-node cli/codevision.js ocr [options] <imagePath>
+node cli/codeplanner.js ocr [options] <imagePath>
 
 # Options
 --lang <code>    OCR language(s), e.g. eng, ara, eng+ara  [default: eng]
@@ -154,22 +174,22 @@ node cli/codevision.js ocr [options] <imagePath>
 
 ```bash
 # Basic text extraction
-node cli/codevision.js ocr screenshot.png
+node cli/codeplanner.js ocr screenshot.png
 
 # Arabic + English, save to file
-node cli/codevision.js ocr scan.png --lang eng+ara --output result.txt
+node cli/codeplanner.js ocr scan.png --lang eng+ara --output result.txt
 
 # JSON output (for scripts / agents to parse)
-node cli/codevision.js ocr screenshot.png --json
+node cli/codeplanner.js ocr screenshot.png --json
 ```
 
 ---
 
 ## AI Agent LM Tool
 
-When used with **GitHub Copilot** or any VS Code Language Model Tool-compatible agent, CodeVision registers a tool that agents can call automatically:
+When used with **GitHub Copilot** or any VS Code Language Model Tool-compatible agent, CodePlanner registers a tool that agents can call automatically:
 
-### `codevision_extract_text`
+### `codeplanner_extract_text`
 
 ```
 Extract text from an image file using OCR.
@@ -181,14 +201,14 @@ Output: { text, confidence, imageWidth, imageHeight }
 
 > "Read the text from **/path/to/screenshot.png** and create a summary."
 
-Copilot will call `codevision_extract_text`, receive the plain text, and work from that.
+Copilot will call `codeplanner_extract_text`, receive the plain text, and work from that.
 
 ---
 
 ## Development
 
 ```bash
-cd codevision
+cd codeplanner
 npm install
 
 # Compile TypeScript
@@ -213,7 +233,7 @@ npm run package
 
 1. Download trained data files from https://github.com/tesseract-ocr/tessdata
 2. Save to a local directory, e.g. `/opt/tessdata/`
-3. Set `"codevision.tessDataPath": "/opt/tessdata"` in VS Code settings
+3. Set `"codeplanner.tessDataPath": "/opt/tessdata"` in VS Code settings
 4. Or pass `--tessdata /opt/tessdata` to the CLI
 
 ---
@@ -221,16 +241,18 @@ npm run package
 ## Project Structure
 
 ```
-codevision/
+codeplanner/
 ├── src/
 │   ├── extension.ts           # VS Code activation + LM tool registration
 │   ├── types.ts               # Shared TypeScript types
 │   ├── ocrEngine.ts           # Tesseract.js wrapper (cached worker)
 │   ├── agentRequestBuilder.ts # Drop-to-insert + agent request commands
 │   ├── commands.ts            # OCR command implementations
+│   ├── copilotBridge.ts       # M365 Copilot Upload Files panel + Finder staging
 │   └── outputPanel.ts         # Editor output helpers
 ├── cli/
-│   └── codevision.js          # Standalone OCR CLI (no VS Code dependency)
+│   └── codeplanner.js          # Standalone OCR CLI (no VS Code dependency)
+├── icon.png
 ├── package.json
 ├── tsconfig.json
 └── webpack.config.js
@@ -246,6 +268,7 @@ Track development progress and session notes in the [`status/`](./status/) folde
 | ----------------------------------------------------- | ---------------------------------------------------------------------------------------- |
 | [project_status_01.md](./status/project_status_01.md) | Session 01 — initial build: OCR engine, wireframe generator, CLI                         |
 | [project_status_02.md](./status/project_status_02.md) | Session 02 — replaced wireframe with Agent Request Builder; drag-and-drop path insertion |
+| [project_status_03.md](./status/project_status_03.md) | Session 03 — renamed codevision → codeplanner; M365 Copilot Upload Bridge                |
 
 ---
 

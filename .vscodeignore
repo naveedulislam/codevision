@@ -12,6 +12,8 @@ tsconfig.json
 
 # Scratch / debug files
 debug_tsv.js
+generate-icon.js
+icon.svg
 
 # Large tessdata training files — downloaded at runtime by tesseract.js
 *.traineddata

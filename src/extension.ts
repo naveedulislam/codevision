@@ -1,5 +1,5 @@
 /**
- * CodeVision Extension — main activation entry point.
+ * CodePlanner Extension — main activation entry point.
  *
  * Registers:
  *   1. VS Code Command Palette commands  (for manual use)
@@ -19,6 +19,10 @@ import {
   cmdInsertWorkspaceContext,
   cmdInsertErrors
 } from './agentRequestBuilder';
+import {
+  CopilotFilesProvider,
+  cmdSendToM365Copilot,
+} from './copilotBridge';
 import { recognizeImage } from './ocrEngine';
 import type { OcrOptions } from './types';
 
@@ -30,35 +34,90 @@ export function activate(context: vscode.ExtensionContext): void {
   // ── Command Palette commands ────────────────────────────────────────────
 
   context.subscriptions.push(
-    vscode.commands.registerCommand('codevision.extractText', (uri?: vscode.Uri) =>
+    vscode.commands.registerCommand('codeplanner.extractText', (uri?: vscode.Uri) =>
       cmdExtractText(context, uri)
     ),
 
-    vscode.commands.registerCommand('codevision.extractTextFromClipboard', () =>
+    vscode.commands.registerCommand('codeplanner.extractTextFromClipboard', () =>
       cmdExtractTextFromClipboard(context)
     ),
 
     // Context-menu wrapper (pass the URI from the explorer)
-    vscode.commands.registerCommand('codevision.extractTextFromUri', (uri: vscode.Uri) =>
+    vscode.commands.registerCommand('codeplanner.extractTextFromUri', (uri: vscode.Uri) =>
       cmdExtractText(context, uri)
     ),
 
-    vscode.commands.registerCommand('codevision.captureScreenshot', () =>
+    vscode.commands.registerCommand('codeplanner.captureScreenshot', () =>
       cmdCaptureScreenshot(context)
     ),
 
     // Agent Request Builder commands
-    vscode.commands.registerCommand('codevision.newAgentRequest', () =>
+    vscode.commands.registerCommand('codeplanner.newAgentRequest', () =>
       cmdNewAgentRequest()
     ),
 
-    vscode.commands.registerCommand('codevision.insertWorkspaceContext', () =>
+    vscode.commands.registerCommand('codeplanner.insertWorkspaceContext', () =>
       cmdInsertWorkspaceContext()
     ),
 
-    vscode.commands.registerCommand('codevision.insertErrors', () =>
+    vscode.commands.registerCommand('codeplanner.insertErrors', () =>
       cmdInsertErrors()
     ),
+
+    // ── M365 Copilot File Bridge ──────────────────────────────────────────
+
+    // Sidebar panel — shows staged files and accepts Explorer drag-drops.
+    ...((): vscode.Disposable[] => {
+      const provider = new CopilotFilesProvider();
+
+      const treeView = vscode.window.createTreeView('codeplanner.copilotFiles', {
+        treeDataProvider: provider,
+        dragAndDropController: provider,
+        canSelectMany: true,
+        showCollapseAll: false,
+      });
+
+      const cmds: vscode.Disposable[] = [
+        treeView,
+
+        // Explorer right-click → "Send to M365 Copilot Chat"
+        // VS Code passes (rightClickedUri, allSelectedUris[]) for multi-select.
+        vscode.commands.registerCommand(
+          'codeplanner.sendToM365Copilot',
+          (uri?: vscode.Uri, selectedUris?: vscode.Uri[]) =>
+            cmdSendToM365Copilot(provider, uri, selectedUris),
+        ),
+
+        // Clicking a staged file in the tree re-copies it to the clipboard.
+        vscode.commands.registerCommand(
+          'codeplanner.copilotRecopyFile',
+          (item: { filePath: string }) =>
+            provider.copyAndNotify(item.filePath),
+        ),
+
+        // Copy icon in the tree view title bar — copies ALL staged files at once.
+        vscode.commands.registerCommand(
+          'codeplanner.copilotCopyAllFiles',
+          () => provider.copyAllAndNotify(),
+        ),
+
+        // Trash icon in the tree view title bar.
+        vscode.commands.registerCommand(
+          'codeplanner.clearCopilotFiles',
+          () => provider.clearFiles(),
+        ),
+
+        // Globe icon — open M365 Copilot in the built-in Simple Browser.
+        vscode.commands.registerCommand('codeplanner.openM365Copilot', () =>
+          vscode.commands.executeCommand(
+            'simpleBrowser.show',
+            'https://m365.cloud.microsoft/chat/',
+          ),
+        ),
+      ];
+
+      return cmds;
+    })(),
 
     // Drop-to-insert: drag files/folders from Explorer → inserts relative path.
     // No dropMimeTypes filter: let VS Code pass all DataTransfer data so
@@ -120,7 +179,7 @@ function registerLmTools(context: vscode.ExtensionContext): void {
   };
 
   // ── Tool 1: extract_text ────────────────────────────────────────────────
-  const extractTool = lm.registerTool('codevision_extract_text', {
+  const extractTool = lm.registerTool('codeplanner_extract_text', {
     description:
       'Extract text from an image file using Tesseract OCR. ' +
       'Returns the plain text content of the image, confidence score, and image dimensions. ' +
@@ -152,7 +211,7 @@ function registerLmTools(context: vscode.ExtensionContext): void {
         tessDataPath?: string;
       };
 
-      const cfg = vscode.workspace.getConfiguration('codevision');
+      const cfg = vscode.workspace.getConfiguration('codeplanner');
       const ocrOpts: OcrOptions = {
         language:     lang ?? cfg.get<string>('tesseractLanguage', 'eng'),
         tessDataPath: (tessDataPath ?? cfg.get<string>('tessDataPath', '')) || undefined

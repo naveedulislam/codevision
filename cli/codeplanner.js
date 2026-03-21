@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 /**
- * CodeVision CLI
+ * CodePlanner CLI
  *
  * Standalone command-line tool for OCR and wireframe generation.
  * Can be used directly from any terminal (also by AI agents in the integrated terminal).
  *
  * Usage:
- *   node codevision.js <command> [options] <imagePath>
+ *   node codeplanner.js <command> [options] <imagePath>
  *
  * Options:
  *   --lang <code>    Tesseract language(s), e.g. eng, ara, eng+ara  (default: eng)
@@ -17,8 +17,8 @@
  *   --help           Show this help message
  *
  * Examples:
- *   node codevision.js ocr screenshot.png
- *   node codevision.js ocr screenshot.png --lang eng+ara --output result.txt
+ *   node codeplanner.js ocr screenshot.png
+ *   node codeplanner.js ocr screenshot.png --lang eng+ara --output result.txt
  */
 
 'use strict';
@@ -86,10 +86,10 @@ function parseArgs(argv) {
 
 function printHelp() {
   console.log(`
-CodeVision CLI — OCR text extraction from images
+CodePlanner CLI — OCR text extraction from images
 
 USAGE
-  node codevision.js ocr [options] <imagePath>
+  node codeplanner.js ocr [options] <imagePath>
 
 OPTIONS
   --lang <code>    Tesseract language code(s)  [default: eng]
@@ -101,8 +101,8 @@ OPTIONS
   --help, -h       Show this help
 
 EXAMPLES
-  node codevision.js ocr screenshot.png
-  node codevision.js ocr screenshot.png --lang eng+ara --output text.txt
+  node codeplanner.js ocr screenshot.png
+  node codeplanner.js ocr screenshot.png --lang eng+ara --output text.txt
   `.trimStart());
 }
 
@@ -115,7 +115,7 @@ async function runOcr(args) {
   const { imageSize } = require('image-size');
 
   if (!args.imagePath || !fs.existsSync(args.imagePath)) {
-    console.error(`[CodeVision] Error: image not found: ${args.imagePath}`);
+    console.error(`[CodePlanner] Error: image not found: ${args.imagePath}`);
     process.exit(1);
   }
 
@@ -136,7 +136,7 @@ async function runOcr(args) {
   if (args.verbose) {
     workerOpts.logger = (m) => {
       if (m.progress !== undefined) {
-        process.stderr.write(`\r[CodeVision] ${m.status} ${Math.round(m.progress * 100)}%`);
+        process.stderr.write(`\r[CodePlanner] ${m.status} ${Math.round(m.progress * 100)}%`);
       }
     };
   }
@@ -164,7 +164,7 @@ function writeOutput(content, outputPath) {
   if (outputPath) {
     fs.mkdirSync(path.dirname(outputPath), { recursive: true });
     fs.writeFileSync(outputPath, content, 'utf8');
-    console.error(`[CodeVision] Saved → ${outputPath}`);
+    console.error(`[CodePlanner] Saved → ${outputPath}`);
   } else {
     process.stdout.write(content);
     if (!content.endsWith('\n')) { process.stdout.write('\n'); }
@@ -184,19 +184,19 @@ async function main() {
   }
 
   if (args.command !== 'ocr') {
-    console.error(`[CodeVision] Unknown command: ${args.command}`);
+    console.error(`[CodePlanner] Unknown command: ${args.command}`);
     printHelp();
     process.exit(1);
   }
 
   if (!args.imagePath) {
-    console.error('[CodeVision] Error: imagePath argument is required.');
+    console.error('[CodePlanner] Error: imagePath argument is required.');
     printHelp();
     process.exit(1);
   }
 
   if (!fs.existsSync(args.imagePath)) {
-    console.error(`[CodeVision] Error: file not found: ${args.imagePath}`);
+    console.error(`[CodePlanner] Error: file not found: ${args.imagePath}`);
     process.exit(1);
   }
 
@@ -206,7 +206,7 @@ async function main() {
     require.resolve('image-size');
   } catch (e) {
     console.error(
-      '[CodeVision] Missing dependencies. Run:\n  npm install tesseract.js image-size\n' +
+      '[CodePlanner] Missing dependencies. Run:\n  npm install tesseract.js image-size\n' +
       'in the extension directory or your project.'
     );
     process.exit(1);
@@ -228,7 +228,7 @@ async function main() {
 
     }
   } catch (err) {
-    console.error(`[CodeVision] Error: ${err.message || err}`);
+    console.error(`[CodePlanner] Error: ${err.message || err}`);
     if (args.verbose) { console.error(err.stack); }
     process.exit(1);
   }

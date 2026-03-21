@@ -1,5 +1,5 @@
 /**
- * Shared TypeScript types for CodeVision extension.
+ * Shared TypeScript types for CodePlanner extension.
  */
 
 export interface OcrResult {

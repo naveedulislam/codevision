@@ -1,5 +1,5 @@
 /**
- * Output Panel — helpers for displaying CodeVision results inside VS Code.
+ * Output Panel — helpers for displaying CodePlanner results inside VS Code.
  *
  * Text results are shown in a new untitled text editor.
  * Wireframe / HTML results are shown in a Webview panel.
@@ -40,7 +40,7 @@ export function showHtmlInWebview(
   }
 
   _panel = vscode.window.createWebviewPanel(
-    'codevisionResult',
+    'codeplannerResult',
     title,
     { viewColumn: vscode.ViewColumn.Beside, preserveFocus: true },
     {

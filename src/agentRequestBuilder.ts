@@ -35,7 +35,7 @@ import * as os from 'os';
  *
  * TIP: VS Code competes with its own "open file" default drop behaviour.
  * A more reliable alternative is right-clicking a file in the Explorer and
- * choosing "CodeVision: Insert Path at Cursor".
+ * choosing "CodePlanner: Insert Path at Cursor".
  */
 export class FileDropEditProvider implements vscode.DocumentDropEditProvider {
   async provideDocumentDropEdits(
@@ -106,7 +106,7 @@ function buildTemplate(wsName: string, date: string): string {
     ``,
     `## Files & References`,
     `<!--`,
-    `  Right-click a file in the Explorer → "CodeVision: Insert Path at Cursor"`,
+    `  Right-click a file in the Explorer → "CodePlanner: Insert Path at Cursor"`,
     `  Or drag files from the Explorer and drop here (drop in the text body, not the tab bar).`,
     `-->`,
     `<!-- Paths are relative to the workspace root. -->`,
@@ -117,14 +117,14 @@ function buildTemplate(wsName: string, date: string): string {
     `---`,
     ``,
     `## Workspace Context`,
-    `<!-- Use "CodeVision: Insert Workspace Context" to add project structure & git status. -->`,
+    `<!-- Use "CodePlanner: Insert Workspace Context" to add project structure & git status. -->`,
     ``,
     ``,
     ``,
     `---`,
     ``,
     `## Errors & Diagnostics`,
-    `<!-- Use "CodeVision: Insert Errors & Diagnostics" to embed current VS Code problems. -->`,
+    `<!-- Use "CodePlanner: Insert Errors & Diagnostics" to embed current VS Code problems. -->`,
     ``,
     ``,
     ``,
@@ -147,7 +147,7 @@ export async function cmdInsertWorkspaceContext(): Promise<void> {
 
   const wsFolder = vscode.workspace.workspaceFolders?.[0];
   if (!wsFolder) {
-    vscode.window.showWarningMessage('CodeVision: No workspace folder open.');
+    vscode.window.showWarningMessage('CodePlanner: No workspace folder open.');
     return;
   }
 

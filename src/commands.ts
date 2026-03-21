@@ -1,5 +1,5 @@
 /**
- * Command implementations for the CodeVision extension.
+ * Command implementations for the CodePlanner extension.
  *
  * Each exported function corresponds to a VS Code command registered in extension.ts.
  */
@@ -18,7 +18,7 @@ import type { OcrOptions } from './types';
 // ---------------------------------------------------------------------------
 
 function getConfig() {
-  const cfg = vscode.workspace.getConfiguration('codevision');
+  const cfg = vscode.workspace.getConfiguration('codeplanner');
   return {
     language:       cfg.get<string>('tesseractLanguage', 'eng'),
     tessDataPath:   cfg.get<string>('tessDataPath', '') || undefined,
@@ -63,13 +63,13 @@ export async function cmdExtractText(
   const imagePath = uriArg?.fsPath ?? await pickImageFile();
   if (!imagePath) { return; }
 
-  const result = await withProgress('CodeVision: Extracting text…', async (progress) => {
+  const result = await withProgress('CodePlanner: Extracting text…', async (progress) => {
     progress.report({ message: path.basename(imagePath) });
     return recognizeImage(imagePath, buildOcrOptions());
   });
 
   const header =
-    `# CodeVision OCR Result\n` +
+    `# CodePlanner OCR Result\n` +
     `# Source : ${imagePath}\n` +
     `# Language: ${getConfig().language}\n` +
     `# Confidence: ${result.confidence.toFixed(1)}%\n` +
@@ -83,7 +83,7 @@ export async function cmdExtractText(
 
   const saved = await saveResult(imagePath, '_ocr', '.txt', output);
   vscode.window.showInformationMessage(
-    `CodeVision: Text extracted → ${path.basename(saved)}`
+    `CodePlanner: Text extracted → ${path.basename(saved)}`
   );
 }
 
@@ -92,18 +92,18 @@ export async function cmdExtractText(
 // ---------------------------------------------------------------------------
 
 export async function cmdExtractTextFromClipboard(context: vscode.ExtensionContext): Promise<void> {
-  const tmpFile = path.join(os.tmpdir(), `codevision-clip-${Date.now()}.png`);
+  const tmpFile = path.join(os.tmpdir(), `codeplanner-clip-${Date.now()}.png`);
 
   try {
     await saveClipboardImageToFile(tmpFile);
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : String(err);
-    vscode.window.showWarningMessage(`CodeVision: No image found in clipboard — ${msg}. Copy an image first, then try again.`);
+    vscode.window.showWarningMessage(`CodePlanner: No image found in clipboard — ${msg}. Copy an image first, then try again.`);
     return;
   }
 
   if (!fs.existsSync(tmpFile)) {
-    vscode.window.showWarningMessage('CodeVision: No image found in clipboard. Copy an image first, then try again.');
+    vscode.window.showWarningMessage('CodePlanner: No image found in clipboard. Copy an image first, then try again.');
     return;
   }
 
@@ -176,7 +176,7 @@ function saveClipboardImageToFile(destPath: string): Promise<void> {
 // ---------------------------------------------------------------------------
 
 export async function cmdCaptureScreenshot(context: vscode.ExtensionContext): Promise<void> {
-  const tmpFile = path.join(os.tmpdir(), `codevision-capture-${Date.now()}.png`);
+  const tmpFile = path.join(os.tmpdir(), `codeplanner-capture-${Date.now()}.png`);
 
   if (process.platform === 'darwin') {
     // screencapture -i: interactive crosshair selection → saves to file
@@ -211,7 +211,7 @@ export async function cmdCaptureScreenshot(context: vscode.ExtensionContext): Pr
           if (!err2) { resolve(true); }
           else {
             vscode.window.showErrorMessage(
-              'CodeVision: No screenshot tool found. Install gnome-screenshot or scrot.'
+              'CodePlanner: No screenshot tool found. Install gnome-screenshot or scrot.'
             );
             resolve(false);
           }

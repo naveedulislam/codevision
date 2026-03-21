@@ -45,7 +45,7 @@ async function getWorker(
     logger: verbose
       ? (m: { status: string; progress: number }) => {
           if (m.progress !== undefined) {
-            process.stdout.write(`\r[CodeVision] ${m.status} ${Math.round(m.progress * 100)}%`);
+            process.stdout.write(`\r[CodePlanner] ${m.status} ${Math.round(m.progress * 100)}%`);
           }
         }
       : undefined

@@ -1,9 +1,10 @@
 {
-  "name": "codevision",
-  "displayName": "CodeVision",
+  "name": "codeplanner",
+  "displayName": "CodePlanner",
   "description": "Extract text from images with OCR and build structured context files for AI agents. Works in VS Code, Cursor, and compatible IDEs.",
-  "version": "0.1.0",
-  "publisher": "codevision",
+  "version": "0.2.0",
+  "publisher": "Naveed",
+  "icon": "icon.png",
   "engines": {
     "vscode": "^1.90.0"
   },
@@ -23,71 +24,144 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/naveedulislam/codevision"
+    "url": "https://github.com/naveedulislam/codeplanner"
   },
   "activationEvents": ["onStartupFinished"],
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "codevision.extractText",
-        "title": "CodeVision: Extract Text from Image File"
+        "command": "codeplanner.extractText",
+        "title": "CodePlanner: Extract Text from Image File"
       },
       {
-        "command": "codevision.extractTextFromClipboard",
-        "title": "CodeVision: Extract Text from Clipboard Image"
+        "command": "codeplanner.extractTextFromClipboard",
+        "title": "CodePlanner: Extract Text from Clipboard Image"
       },
       {
-        "command": "codevision.extractTextFromUri",
-        "title": "Extract Text with CodeVision"
+        "command": "codeplanner.extractTextFromUri",
+        "title": "Extract Text with CodePlanner"
       },
       {
-        "command": "codevision.captureScreenshot",
-        "title": "CodeVision: Capture Screenshot & Extract Text"
+        "command": "codeplanner.captureScreenshot",
+        "title": "CodePlanner: Capture Screenshot & Extract Text"
       },
       {
-        "command": "codevision.newAgentRequest",
-        "title": "CodeVision: New Agent Request"
+        "command": "codeplanner.newAgentRequest",
+        "title": "CodePlanner: New Agent Request"
       },
       {
-        "command": "codevision.insertWorkspaceContext",
-        "title": "CodeVision: Insert Workspace Context"
+        "command": "codeplanner.insertWorkspaceContext",
+        "title": "CodePlanner: Insert Workspace Context"
       },
       {
-        "command": "codevision.insertErrors",
-        "title": "CodeVision: Insert Errors & Diagnostics"
+        "command": "codeplanner.insertErrors",
+        "title": "CodePlanner: Insert Errors & Diagnostics"
+      },
+      {
+        "command": "codeplanner.sendToM365Copilot",
+        "title": "Send to Upload Files",
+        "category": "CodePlanner"
+      },
+      {
+        "command": "codeplanner.clearCopilotFiles",
+        "title": "Clear Staged Files",
+        "category": "CodePlanner",
+        "icon": "$(clear-all)"
+      },
+      {
+        "command": "codeplanner.copilotRecopyFile",
+        "title": "Re-copy to Clipboard",
+        "category": "CodePlanner",
+        "icon": "$(clippy)"
+      },
+      {
+        "command": "codeplanner.openM365Copilot",
+        "title": "Open M365 Copilot Chat",
+        "category": "CodePlanner",
+        "icon": "$(globe)"
+      },
+      {
+        "command": "codeplanner.copilotCopyAllFiles",
+        "title": "Copy All to Clipboard",
+        "category": "CodePlanner",
+        "icon": "$(copy)"
       }
     ],
     "keybindings": [
       {
-        "command": "codevision.captureScreenshot",
+        "command": "codeplanner.captureScreenshot",
         "key": "ctrl+shift+alt+4",
         "mac": "ctrl+shift+cmd+4"
+      },
+      {
+        "command": "codeplanner.sendToM365Copilot",
+        "key": "ctrl+shift+alt+u",
+        "mac": "ctrl+shift+cmd+u"
       }
     ],
+    "views": {
+      "explorer": [
+        {
+          "id": "codeplanner.copilotFiles",
+          "name": "Upload Files",
+          "visibility": "collapsed",
+          "contextualTitle": "Upload Files"
+        }
+      ]
+    },
     "menus": {
       "explorer/context": [
         {
-          "command": "codevision.extractTextFromUri",
+          "command": "codeplanner.extractTextFromUri",
           "when": "resourceExtname =~ /^\\.(png|jpg|jpeg|bmp|tiff|gif|webp)$/i",
-          "group": "codevision@1"
+          "group": "codeplanner@1"
+        },
+        {
+          "command": "codeplanner.sendToM365Copilot",
+          "when": "!explorerResourceIsFolder",
+          "group": "codeplanner@2"
+        }
+      ],
+      "view/title": [
+        {
+          "command": "codeplanner.copilotCopyAllFiles",
+          "when": "view == codeplanner.copilotFiles",
+          "group": "navigation@1"
+        },
+        {
+          "command": "codeplanner.clearCopilotFiles",
+          "when": "view == codeplanner.copilotFiles",
+          "group": "navigation@2"
+        },
+        {
+          "command": "codeplanner.openM365Copilot",
+          "when": "view == codeplanner.copilotFiles",
+          "group": "navigation@3"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "codeplanner.copilotRecopyFile",
+          "when": "view == codeplanner.copilotFiles && viewItem == copilotFileItem",
+          "group": "inline"
         }
       ]
     },
     "configuration": {
-      "title": "CodeVision",
+      "title": "CodePlanner",
       "properties": {
-        "codevision.tesseractLanguage": {
+        "codeplanner.tesseractLanguage": {
           "type": "string",
           "default": "eng",
           "description": "Tesseract OCR language(s), e.g., 'eng', 'ara', 'eng+ara', 'chi_sim'. Multiple languages separated by '+'."
         },
-        "codevision.tessDataPath": {
+        "codeplanner.tessDataPath": {
           "type": "string",
           "default": "",
           "description": "Path to local Tesseract language data directory (for offline/air-gapped use). Leave empty to download automatically."
         },
-        "codevision.openResultInEditor": {
+        "codeplanner.openResultInEditor": {
           "type": "boolean",
           "default": true,
           "description": "Automatically open OCR/wireframe results in a new editor tab."
