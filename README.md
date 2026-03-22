@@ -14,7 +14,7 @@ A VS Code / Cursor extension (and standalone CLI) for **OCR text extraction** an
 | **Drop-to-insert**        | Drag files or folders from the Explorer into any open document — the relative path is inserted at the cursor automatically                                                           |
 | **Workspace context**     | One command inserts your project folder tree and `git status` into the active document                                                                                               |
 | **Error context**         | One command inserts all current VS Code diagnostics (errors and warnings) into the active document                                                                                   |
-| **Screenshot capture**    | `Ctrl+Shift+Cmd+4` (macOS) / `Ctrl+Shift+Alt+4` (Windows/Linux) triggers OS screenshot tool → OCR result in editor                                                                   |
+| **Screenshot capture**    | Command Palette trigger — macOS: `screencapture -i`, Windows: automated `Win+Shift+S` + clipboard polling, Linux: gnome-screenshot / scrot fallback → OCR result in editor            |
 | **Clipboard extraction**  | Extract text directly from an image copied to clipboard (no save needed)                                                                                                             |
 | **AI agent LM tool**      | Registered as a VS Code Language Model Tool — Copilot and other agents can call `codeplanner_extract_text` directly                                                                  |
 | **CLI tool**              | `node cli/codeplanner.js ocr` works in any terminal, including the integrated terminal                                                                                               |
@@ -141,10 +141,10 @@ The **Upload Files** panel in the Explorer sidebar lets you stage any number of 
 
 ## Keyboard Shortcuts
 
-| Shortcut           | Platform        | Action                            |
-| ------------------ | --------------- | --------------------------------- |
-| `Ctrl+Shift+Cmd+4` | macOS           | Capture Screenshot & Extract Text |
-| `Ctrl+Shift+Alt+4` | Windows / Linux | Capture Screenshot & Extract Text |
+| Shortcut            | Platform        | Action                 |
+| ------------------- | --------------- | ---------------------- |
+| `Ctrl+Shift+Cmd+U`  | macOS           | Send to Upload Files   |
+| `Ctrl+Shift+Alt+U`  | Windows / Linux | Send to Upload Files   |
 
 ---
 
@@ -229,6 +229,9 @@ npm run compile
 # Watch mode
 npm run watch
 
+# Run all tests (78 tests — unit + integration)
+npm test
+
 # Package VSIX
 npm run package
 ```
@@ -264,9 +267,15 @@ codeplanner/
 │   └── outputPanel.ts         # Editor output helpers
 ├── cli/
 │   └── codeplanner.js          # Standalone OCR CLI (no VS Code dependency)
+├── test/
+│   ├── __mocks__/vscode.ts      # Comprehensive VS Code API mock
+│   ├── unit/                    # Unit tests for each module
+│   └── integration/             # Integration tests across modules
 ├── icon.png
 ├── package.json
+├── jest.config.js
 ├── tsconfig.json
+├── tsconfig.test.json
 └── webpack.config.js
 ```
 
@@ -282,6 +291,7 @@ Track development progress and session notes in the [`status/`](./status/) folde
 | [project_status_02.md](./status/project_status_02.md) | Session 02 — replaced wireframe with Agent Request Builder; drag-and-drop path insertion |
 | [project_status_03.md](./status/project_status_03.md) | Session 03 — renamed codevision → codeplanner; M365 Copilot Upload Bridge                |
 | [project_status_04.md](./status/project_status_04.md) | Session 04 — Upload Files UX fixes; Agent Request template update                        |
+| [project_status_05.md](./status/project_status_05.md) | Session 05 — Windows screenshot fix; unit & integration test suite                       |
 
 ---
 
