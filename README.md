@@ -14,7 +14,7 @@ A VS Code / Cursor extension (and standalone CLI) for **OCR text extraction** an
 | **Drop-to-insert**        | Drag files or folders from the Explorer into any open document — the relative path is inserted at the cursor automatically                                                           |
 | **Workspace context**     | One command inserts your project folder tree and `git status` into the active document                                                                                               |
 | **Error context**         | One command inserts all current VS Code diagnostics (errors and warnings) into the active document                                                                                   |
-| **Screenshot capture**    | Command Palette trigger — macOS: `screencapture -i`, Windows: automated `Win+Shift+S` + clipboard polling, Linux: gnome-screenshot / scrot fallback → OCR result in editor            |
+| **Screenshot capture**    | Command Palette trigger — macOS: `screencapture -i`, Windows: automated `Win+Shift+S` + clipboard polling, Linux: gnome-screenshot / scrot fallback → OCR result in editor           |
 | **Clipboard extraction**  | Extract text directly from an image copied to clipboard (no save needed)                                                                                                             |
 | **AI agent LM tool**      | Registered as a VS Code Language Model Tool — Copilot and other agents can call `codeplanner_extract_text` directly                                                                  |
 | **CLI tool**              | `node cli/codeplanner.js ocr` works in any terminal, including the integrated terminal                                                                                               |
@@ -141,10 +141,10 @@ The **Upload Files** panel in the Explorer sidebar lets you stage any number of 
 
 ## Keyboard Shortcuts
 
-| Shortcut            | Platform        | Action                 |
-| ------------------- | --------------- | ---------------------- |
-| `Ctrl+Shift+Cmd+U`  | macOS           | Send to Upload Files   |
-| `Ctrl+Shift+Alt+U`  | Windows / Linux | Send to Upload Files   |
+| Shortcut           | Platform        | Action               |
+| ------------------ | --------------- | -------------------- |
+| `Ctrl+Shift+Cmd+U` | macOS           | Send to Upload Files |
+| `Ctrl+Shift+Alt+U` | Windows / Linux | Send to Upload Files |
 
 ---
 

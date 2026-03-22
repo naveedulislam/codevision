@@ -123,19 +123,19 @@ Comprehensive mock of the VS Code API. Stubs all APIs used by the extension: `Ur
 
 ## 2. Current State
 
-| Area                        | Status      | Notes                                                                           |
-| --------------------------- | ----------- | ------------------------------------------------------------------------------- |
-| OCR engine (`ocrEngine.ts`) | Complete    | Unchanged from session 01                                                       |
-| Agent Request Builder       | Complete    | Seven template sections (session 04)                                            |
-| Drop-to-insert              | Complete    | Unchanged from session 02                                                       |
-| Upload Files panel          | Complete    | UX fixes from session 04                                                        |
-| Screenshot capture (macOS)  | Complete    | `screencapture -i` — unchanged                                                 |
-| Screenshot capture (Windows)| Fixed       | Automated Win+Shift+S → clipboard polling → OCR pipeline                        |
-| Screenshot capture (Linux)  | Complete    | gnome-screenshot / scrot fallback — unchanged                                   |
-| LM Tool registration        | Complete    | `codeplanner_extract_text`                                                      |
-| Test suite                  | Complete    | 78 tests (69 unit + 9 integration), Jest + ts-jest, all passing                 |
-| VSIX packaging              | Complete    | `codeplanner-0.2.0.vsix`                                                        |
-| Marketplace publish         | Pending     | Not yet submitted                                                               |
+| Area                         | Status   | Notes                                                           |
+| ---------------------------- | -------- | --------------------------------------------------------------- |
+| OCR engine (`ocrEngine.ts`)  | Complete | Unchanged from session 01                                       |
+| Agent Request Builder        | Complete | Seven template sections (session 04)                            |
+| Drop-to-insert               | Complete | Unchanged from session 02                                       |
+| Upload Files panel           | Complete | UX fixes from session 04                                        |
+| Screenshot capture (macOS)   | Complete | `screencapture -i` — unchanged                                  |
+| Screenshot capture (Windows) | Fixed    | Automated Win+Shift+S → clipboard polling → OCR pipeline        |
+| Screenshot capture (Linux)   | Complete | gnome-screenshot / scrot fallback — unchanged                   |
+| LM Tool registration         | Complete | `codeplanner_extract_text`                                      |
+| Test suite                   | Complete | 78 tests (69 unit + 9 integration), Jest + ts-jest, all passing |
+| VSIX packaging               | Complete | `codeplanner-0.2.0.vsix`                                        |
+| Marketplace publish          | Pending  | Not yet submitted                                               |
 
 ---
 
